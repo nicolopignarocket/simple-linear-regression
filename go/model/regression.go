@@ -41,7 +41,7 @@ func (m *SimpleLinearRegression) findCoefficients() {
 
 	acceptableError := 0.1
 	iterations := 0
-	stepSize := 0.1
+	stepSize := 100.
 
 	for {
 		dRssW0, dRssW1, dRssMagnitude := m.dRss(estimatedW0, estimatedW1)
@@ -51,7 +51,7 @@ func (m *SimpleLinearRegression) findCoefficients() {
 		}
 
 		if dRssMagnitude > previousMagnitude {
-			stepSize /= (1 + float64(iterations))
+			stepSize /= 1 + math.Sqrt(float64(iterations))
 		}
 
 		previousMagnitude = dRssMagnitude
@@ -62,7 +62,7 @@ func (m *SimpleLinearRegression) findCoefficients() {
 
 		iterations++
 
-		fmt.Printf("Next step size: %f\n", stepSize)
+		fmt.Printf("Next step size: %e\n", stepSize)
 
 		estimatedW0 = estimatedW0 - (stepSize * dRssW0)
 		estimatedW1 = estimatedW1 - (stepSize * dRssW1)

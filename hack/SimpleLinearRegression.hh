@@ -21,7 +21,7 @@ final class SimpleLinearRegression
   private function buildModel(): void
   {
     echo "Finding coefficients...\n";
-    $acceptedErrorThreshold = 0.1;
+    $acceptedErrorThreshold = 0.0001;
     $stepSize = 0.1;
     $estimatedCoefficients = shape('w0' => 0., 'w1' => 0.);
     $iterations = 0;
@@ -62,7 +62,7 @@ final class SimpleLinearRegression
   {
     $sumW0 = $sumW1 = 0.;
 
-    foreach ($this->dataset as $observation) {
+    foreach ($this->dataset->getRows() as $observation) {
       $xi = $observation[$this->inputColumn];
       $yi = $observation[$this->outputColumn];
 
