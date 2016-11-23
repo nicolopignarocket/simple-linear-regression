@@ -8,6 +8,7 @@ require_once 'DataSet.hh';
 
 (function(): void {
   $dataSet = DataSet::fromCsvFile('../dataset.csv');
+  $dataSet = $dataSet->apply($row ==> $row['Square meters'] <= 200);
 
   $simpleLinearRegression = new SimpleLinearRegression($dataSet, 'Square meters', 'Price');
 

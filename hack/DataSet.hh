@@ -43,4 +43,10 @@ final class DataSet
   {
     return $this->rows;
   }
+
+  public function apply((function(mixed): bool) $fn): DataSet {
+    $rows = array_filter($this->rows, $fn);
+
+    return new DataSet(clone $this->columns, new vector($rows));
+  }
 }
