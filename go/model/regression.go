@@ -37,11 +37,12 @@ func (m *SimpleLinearRegression) Predict(squareMeters float64) float64 {
 func (m *SimpleLinearRegression) findCoefficients() {
 	fmt.Println("Finding coefficients...")
 
-	var estimatedW0, estimatedW1, previousMagnitude float64
+	var estimatedW0, estimatedW1, prevW0, prevW1 float64
+	previousMagnitude := -1.
 
-	acceptableError := 0.1
+	acceptableError := 1.
 	iterations := 0
-	stepSize := 100.
+	stepSize := 1.
 
 	for {
 		dRssW0, dRssW1, dRssMagnitude := m.dRss(estimatedW0, estimatedW1)
@@ -50,19 +51,26 @@ func (m *SimpleLinearRegression) findCoefficients() {
 			break
 		}
 
-		if dRssMagnitude > previousMagnitude {
-			stepSize /= 1 + math.Sqrt(float64(iterations))
+		if dRssMagnitude > previousMagnitude && previousMagnitude >= 0 {
+			estimatedW0 = prevW0
+			estimatedW1 = prevW1
+			stepSize *= .5
+		} else {
+			previousMagnitude = dRssMagnitude
+			stepSize *= 1.05
 		}
 
-		previousMagnitude = dRssMagnitude
 
 		fmt.Printf(
-			"Iteration %d: est. w0 %f, est. w1 %f, dRssW0 %f, dRssW1 %f, magnitude %f\n",
+			"Iteration %d: est. w0 %g, est. w1 %g, dRssW0 %g, dRssW1 %g, magnitude %g\n",
 			iterations, estimatedW0, estimatedW1, dRssW0, dRssW1, dRssMagnitude)
 
 		iterations++
 
 		fmt.Printf("Next step size: %e\n", stepSize)
+
+		prevW0 = estimatedW0
+		prevW1 = estimatedW1
 
 		estimatedW0 = estimatedW0 - (stepSize * dRssW0)
 		estimatedW1 = estimatedW1 - (stepSize * dRssW1)
