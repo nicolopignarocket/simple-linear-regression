@@ -37,7 +37,7 @@ func (m *SimpleLinearRegression) Predict(squareMeters float64) float64 {
 func (m *SimpleLinearRegression) findCoefficients() {
 	fmt.Println("Finding coefficients...")
 
-	var estimatedW0, estimatedW1, prevW0, prevW1 float64
+	var estimatedW0, estimatedW1, previousW0, previousW1 float64
 	previousMagnitude := -1.
 
 	acceptableError := 1.
@@ -51,13 +51,17 @@ func (m *SimpleLinearRegression) findCoefficients() {
 			break
 		}
 
-		if dRssMagnitude > previousMagnitude && previousMagnitude >= 0 {
-			estimatedW0 = prevW0
-			estimatedW1 = prevW1
-			stepSize *= .5
+		if previousMagnitude >= 0 {
+			if dRssMagnitude > previousMagnitude {
+				estimatedW0 = previousW0
+				estimatedW1 = previousW1
+				stepSize *= .5
+			} else {
+				previousMagnitude = dRssMagnitude
+				stepSize *= 1.05
+			}
 		} else {
 			previousMagnitude = dRssMagnitude
-			stepSize *= 1.05
 		}
 
 
@@ -69,8 +73,8 @@ func (m *SimpleLinearRegression) findCoefficients() {
 
 		fmt.Printf("Next step size: %e\n", stepSize)
 
-		prevW0 = estimatedW0
-		prevW1 = estimatedW1
+		previousW0 = estimatedW0
+		previousW1 = estimatedW1
 
 		estimatedW0 = estimatedW0 - (stepSize * dRssW0)
 		estimatedW1 = estimatedW1 - (stepSize * dRssW1)

@@ -16,6 +16,6 @@ func main() {
 		var squareMeters float64
 		fmt.Scanf("%f", &squareMeters)
 		predictedSellingPrice := simpleLinearRegression.Predict(squareMeters)
-		fmt.Printf("Predicted selling price: %.2f\n", predictedSellingPrice)
+		fmt.Printf("Predicted selling price: € %.2f\n", predictedSellingPrice)
 	}
 }
